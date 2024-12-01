@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головна</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Ботанічний Сад</h1>
+        </div>
+
+        <div class="left">
+            <nav>
+                <ul>
+                    <li><a href="index.html">ГОЛОВНА</a></li>
+                    <li><a href="page1.html">ПРО НАС</a></li>
+                    <li><a href="page2.html">ІСТОРІЯ</a></li>
+                    <li><a href="page3.html">ЕКСПОЗИЦІЇ</a></li>
+                    <li><a href="page4.html">ВІДВІДУВАЧАМ</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="center">
+            <div class="news-section">
+                <h2>Останні новини саду</h2>
+                <!-- Новини будуть завантажуватись тут -->
+            </div>
+        </div>
+
+        <div class="right">
+            <h3>Галерея зображень</h3>
+            <a href="images/схема.jpg" target="_blank"><img src="images/схема.jpg"></a>
+            <a href="images/картинка1.jpg" target="_blank"><img src="images/картинка1.jpg"></a>
+            <a href="images/картинка2.jpg" target="_blank"><img src="images/картинка2.jpg"></a>
+        </div>
+
+        <div class="center-footer">
+            <p>Слідкуйте за нами:</p>
+            <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+        </div>
+
+        <div class="footer">
+            <div>
+                <h3>Бережіть природу</h3>
+                <p>АДРЕСА: вул. Зелених рослин, 10</p>
+                <p>ТЕЛЕФОН: (123) 456-7890</p>
+                <p>ЕЛЕКТРОННА ПОШТА: info@botanicalgarden.com</p>
+            </div>
+            <div>
+                <p>ГОДИНИ РОБОТИ:</p>
+                <p>Пн-Пт: 9:00 - 17:00</p>
+                <p>Сб-Нд: 10:00 - 16:00</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const newsSection = document.querySelector(".news-section");
+        
+            // Функція для отримання даних з сервера
+            async function fetchNews() {
+                try {
+                    const response = await fetch('get_news.php');
+                    if (!response.ok) throw new Error("Помилка завантаження даних");
+                    
+                    const newsData = await response.json();
+                    updateNewsSection(newsData);
+                } catch (error) {
+                    console.error("Сталася помилка:", error);
+                }
+            }
+        
+            // Функція для оновлення блоку новин
+            function updateNewsSection(newsItems) {
+                const newsHTML = newsItems.map(news => `
+                    <div class="news-item">
+                        <h3>${news.title}</h3>
+                        <p class="date">${news.date}</p>
+                        <p>${news.content}</p>
+                    </div>
+                `).join('');
+                
+                newsSection.innerHTML = `
+                    <h2>Останні новини саду</h2>
+                    ${newsHTML}
+                `;
+            }
+        
+            // Періодичний запит до сервера
+            setInterval(fetchNews, 10000); // Оновлення кожні 10 секунд
+        
+            // Початковий запит
+            fetchNews();
+        });
+        </script>
+        
+</body>
+</html>
